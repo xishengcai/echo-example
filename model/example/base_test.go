@@ -5,7 +5,7 @@ import (
 )
 
 func TestLoadMySql(t *testing.T) {
-	LoadMysql()
+	LoadExampleSQL()
 	var tables = make([]string, 10)
 	if err := db.Raw("show tables").Scan(&tables).Error; err != nil {
 		t.Fatal(err)

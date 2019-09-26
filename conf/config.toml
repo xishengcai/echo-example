@@ -15,7 +15,7 @@ jwt_key = "adkafeafdfafe"
         password = "caicai12"
         db = "example"
 
-       [server.dev.example_sql]
+       [server.dev.cloud_sql]
         ip = "127.0.0.1"
         port = "3333"
         username = "root"

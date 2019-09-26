@@ -1,8 +1,9 @@
 package main
 
 import (
-	"echo/client"
 	"echo/conf"
+	"echo/model/cloud"
+	"echo/model/example"
 	"echo/router"
 	"github.com/urfave/cli"
 
@@ -26,9 +27,8 @@ func main() {
 
 	app.Action = func(c *cli.Context) error {
 		conf.LoadConfig(config)
-		client.LoadMysql()
-		//db := client.GetMySqlDB("example")
-		//fmt.Println("db", db)
+		example.LoadExampleSQL()
+		cloud.LoadCloudSQL()
 		router.Start()
 		return nil
 	}

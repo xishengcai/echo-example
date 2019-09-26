@@ -1,7 +1,6 @@
 package example
 
 import (
-	"cloud/model"
 	"fmt"
 )
 
