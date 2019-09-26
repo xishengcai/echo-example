@@ -1,0 +1,30 @@
+title = "huodong"
+env = "dev"
+version = "1.0"
+port = "8080"
+
+jwt_key = "adkafeafdfafe"
+
+
+[server]
+    [server.dev]
+        [server.dev.example_sql]
+        ip = "127.0.0.1"
+        port = "3333"
+        username = "root"
+        password = "caicai12"
+        db = "example"
+
+       [server.dev.example_sql]
+        ip = "127.0.0.1"
+        port = "3333"
+        username = "root"
+        password = "caicai12"
+        db = "cloud"
+
+        [server.dev.redis]
+        ip = "127.0.0.1"
+        port = "6379"
+        Password = ""
+        db = 0
+
