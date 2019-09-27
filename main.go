@@ -16,6 +16,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "new echo project"
 	var config string
+
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:        "config",

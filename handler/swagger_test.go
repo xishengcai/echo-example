@@ -12,7 +12,7 @@ func Test_HttpTestSwagger(t *testing.T) {
 	token := ""
 	//form表单数据
 	data := `{}`
-	req, err := http.NewRequest("POST", "http://localhost:1323/api/activity/earning/GetUserBalance", strings.NewReader(data))
+	req, err := http.NewRequest("POST", "http://localhost:8080/createUser", strings.NewReader(data))
 	if err != nil {
 		t.Error("http.NewRequest err:", err)
 		return
