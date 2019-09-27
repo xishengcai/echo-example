@@ -3,10 +3,10 @@ package router
 import (
 	"echo/conf"
 	"echo/handler"
+	md "echo/middleware"
 	"github.com/facebookgo/grace/gracehttp"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	"github.com/labstack/gommon/log"
 	"net/http"
 )
 
@@ -25,6 +25,7 @@ func Start() {
 	//	return false, nil
 	//}))
 
+	//Secure 中间件用于阻止跨站脚本攻击(XSS)，内容嗅探，点击劫持，不安全链接等其他代码注入攻击。
 	e.Use(middleware.SecureWithConfig(middleware.SecureConfig{
 		XSSProtection:         "",
 		ContentTypeNosniff:    "",
@@ -54,17 +55,17 @@ func Start() {
 	}))
 
 	e.Use(middleware.Logger())
-
+	e.Use(md.Pprof())
 	initRouter()
 
 	e.Server.Addr = ":" + config.Port
-	e.Logger.Fatal(gracehttp.Serve(e.Server))
+	go e.Logger.Fatal(gracehttp.Serve(e.Server))
+	//go e.Logger.Fatal(e.StartAutoTLS(":443"))
 }
 
 func initRouter() {
 	// 健康检查
 	e.GET("/healthy", func(c echo.Context) error {
-		log.Info("check healthy")
 		return c.String(http.StatusOK, "ok")
 	})
 

@@ -25,12 +25,13 @@ type RedisConf struct {
 }
 
 type Conf struct {
-	Title   string                  `toml:"title"`
-	Env     string                  `toml:"env"`
-	Version string                  `toml:"version"`
-	Server  map[string]ServerConfig `toml:"server"`
-	Port    string                  `toml:"port"`
-	JwtKey  string                  `toml:"jwt_key"`
+	Title     string                  `toml:"title"`
+	Env       string                  `toml:"env"`
+	Version   string                  `toml:"version"`
+	Server    map[string]ServerConfig `toml:"server"`
+	Port      string                  `toml:"port"`
+	JwtKey    string                  `toml:"jwt_key"`
+	WhiteList []string                `toml:"white_list"`
 }
 
 type ServerConfig struct {
