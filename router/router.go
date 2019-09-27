@@ -3,11 +3,11 @@ package router
 import (
 	"echo/conf"
 	"echo/handler"
+	"github.com/facebookgo/grace/gracehttp"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/labstack/gommon/log"
 	"net/http"
-	"time"
 )
 
 var e *echo.Echo
@@ -16,6 +16,22 @@ func Start() {
 	config := conf.GetConfig()
 	e = echo.New()
 	e.Use(middleware.Recover())
+	e.Use(middleware.BodyLimit("2M"))
+
+	//e.Use(middleware.BasicAuth(func(username, password string, c echo.Context) (bool, error) {
+	//	if username == "root" && password == "root" {
+	//		return true, nil
+	//	}
+	//	return false, nil
+	//}))
+
+	e.Use(middleware.SecureWithConfig(middleware.SecureConfig{
+		XSSProtection:         "",
+		ContentTypeNosniff:    "",
+		XFrameOptions:         "",
+		HSTSMaxAge:            3600,
+		ContentSecurityPolicy: "default-src 'self'",
+	}))
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowHeaders: []string{echo.HeaderOrigin,
@@ -34,14 +50,15 @@ func Start() {
 		},
 		AllowCredentials: true,
 		AllowMethods:     []string{echo.GET, echo.HEAD, echo.PUT, echo.PATCH, echo.POST, echo.DELETE, echo.OPTIONS},
+		AllowOrigins:     []string{"*"},
 	}))
+
+	e.Use(middleware.Logger())
+
 	initRouter()
-	s := &http.Server{
-		Addr:         ":" + config.Port,
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 10 * time.Second,
-	}
-	log.Fatal(e.StartServer(s))
+
+	e.Server.Addr = ":" + config.Port
+	e.Logger.Fatal(gracehttp.Serve(e.Server))
 }
 
 func initRouter() {
@@ -60,12 +77,24 @@ func initRouter() {
 	// home web
 	e.Static("/static", "static")
 
+	e.POST("/login", handler.Login)
+
 	// 路由分组
 	v1 := e.Group("/api/v1")
 	v1.GET("/swag", handler.Swagger)
+	v1.GET("/stream", handler.Stream)
+	v1.GET("/request", handler.Request)
+	v1.GET("/stream2", handler.Stream2)
 
-	ws := e.Group("/ws")
+	// need jwt auth
+	v2 := e.Group("/api/v2")
+	// Configure middleware with the custom claims type
+
+	v2.Use(middleware.JWT([]byte("secret")))
+	v2.GET("/restricted", handler.Restricted)
+
 	//websocket
+	ws := e.Group("/ws")
 	ws.GET("/echo", handler.Echo)
 
 }
